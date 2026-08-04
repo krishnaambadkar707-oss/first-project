@@ -1,0 +1,12 @@
+import streamlit.web.cli as stcli
+import sys
+import os
+from Main_UI import main
+
+if __name__ == "__main__":
+    sys.argv = [
+        "streamlit",
+        "run",
+        os.path.join(os.path.dirname(__file__), "app.py"),
+    ]
+    sys.exit(stcli.main())

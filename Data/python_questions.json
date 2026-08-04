@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "difficulty": "Easy",
+        "question": "What is Python?",
+        "answer": "Python is a high-level interpreted programming language."
+    },
+
+    {
+        "id": 2,
+        "difficulty": "Easy",
+        "question": "What is a List?",
+        "answer": "A List is an ordered mutable collection."
+    },
+
+    {
+        "id": 3,
+        "difficulty": "Medium",
+        "question": "Explain Decorators.",
+        "answer": "Decorators modify functions without changing their source code."
+    },
+
+    {
+        "id": 4,
+        "difficulty": "Hard",
+        "question": "Explain the Global Interpreter Lock.",
+        "answer": "The GIL allows only one thread to execute Python bytecode at a time."
+    }
+]
