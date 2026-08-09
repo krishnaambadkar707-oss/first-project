@@ -2,26 +2,52 @@ from Interview.interview_engine import InterviewEngine
 from Interview.timer import InterviewTimer
 from Interview.evaluator import AnswerEvaluator
 
-from Speech.text_to_speech import TextToSpeech
-from Speech.speech_to_text import SpeechToText
-from Speech.audio_recorder import AudioRecorder
-
 
 class InterviewController:
+    """
+    Text-based scoring (engine/timer/evaluator) is cheap and is set
+    up immediately. Voice components (TTS, Whisper STT, the audio
+    recorder) are heavy -- they load ML models / open OS audio
+    devices -- so they are only imported and constructed the first
+    time record_answer()/speak_question() is actually called. This
+    means a candidate who only types answers never needs a working
+    microphone, speaker, or a downloaded Whisper model.
+    """
 
     def __init__(self):
 
         self.engine = InterviewEngine()
-
         self.timer = InterviewTimer()
-
-        self.tts = TextToSpeech()
-
-        self.recorder = AudioRecorder()
-
-        self.stt = SpeechToText()
-
         self.evaluator = AnswerEvaluator()
+
+        self._tts = None
+        self._stt = None
+        self._recorder = None
+
+    # ---------------------------------
+    # Lazy voice components
+    # ---------------------------------
+
+    @property
+    def tts(self):
+        if self._tts is None:
+            from Speech.text_to_speech import TextToSpeech
+            self._tts = TextToSpeech()
+        return self._tts
+
+    @property
+    def stt(self):
+        if self._stt is None:
+            from Speech.speech_to_text import SpeechToText
+            self._stt = SpeechToText()
+        return self._stt
+
+    @property
+    def recorder(self):
+        if self._recorder is None:
+            from Speech.audio_recorder import AudioRecorder
+            self._recorder = AudioRecorder()
+        return self._recorder
 
     # ---------------------------------
     # Load Question File

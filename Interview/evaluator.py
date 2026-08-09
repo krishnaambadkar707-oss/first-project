@@ -2,7 +2,11 @@ import re
 
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-import language_tool_python
+
+try:
+    import language_tool_python
+except Exception:
+    language_tool_python = None
 
 
 class AnswerEvaluator:
@@ -13,9 +17,20 @@ class AnswerEvaluator:
             "all-MiniLM-L6-v2"
         )
 
-        self.grammar_tool = language_tool_python.LanguageTool(
-            "en-US"
-        )
+        # language_tool_python needs a local Java runtime and downloads
+        # a large grammar-checker server on first use. If Java isn't
+        # installed (common on a fresh machine), don't let the whole
+        # evaluator -- and therefore the whole interview -- fail to
+        # start; just skip grammar scoring instead.
+        self.grammar_tool = None
+
+        if language_tool_python is not None:
+            try:
+                self.grammar_tool = language_tool_python.LanguageTool(
+                    "en-US"
+                )
+            except Exception:
+                self.grammar_tool = None
 
     # ----------------------------------
     # Semantic Similarity
@@ -83,6 +98,12 @@ class AnswerEvaluator:
         self,
         text
     ):
+
+        if self.grammar_tool is None:
+            # Grammar checking unavailable (e.g. no local Java
+            # runtime) -- neutral default so overall scoring still
+            # works using the other four components.
+            return 80
 
         matches = self.grammar_tool.check(text)
 

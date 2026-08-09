@@ -2,12 +2,17 @@ from pathlib import Path
 
 from Speech.whisper_loader import get_whisper_model
 
+try:
+    from Main_UI.config import WHISPER_MODEL
+except Exception:
+    WHISPER_MODEL = "base"
+
 
 class SpeechToText:
 
     def __init__(self):
 
-        self.model = get_whisper_model()
+        self.model = get_whisper_model(WHISPER_MODEL)
 
     def transcribe(self, audio_path):
 

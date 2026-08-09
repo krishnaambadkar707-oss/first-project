@@ -15,12 +15,12 @@ language-tool-python==2.8
 pdfplumber==0.11.4
 python-docx==1.1.2
 reportlab==4.2.2
-SpeechRecognition==3.10.4
-pyaudio==0.2.14
+sounddevice==0.4.7
+soundfile==0.12.1
+scipy==1.13.1
 Pillow==10.4.0
 python-dotenv==1.0.1
 bcrypt==4.2.0
-passlib==1.7.4
 spacy==3.7.6
 openai-whisper==20231117
 pyttsx3==2.90

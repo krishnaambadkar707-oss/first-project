@@ -1,42 +1,23 @@
 import whisper
-from Speech.speech_to_text import SpeechToText
-from Speech.audio_processor import AudioProcessor
-from Speech.speech_metrics import SpeechMetrics
+
+_model = None
+_model_name = "base"
 
 
-class WhisperModel:
+def get_whisper_model(model_name=None):
+    """
+    Lazily load and cache a single Whisper model instance for the
+    whole process, so it is only loaded from disk once even though
+    SpeechToText() may be constructed more than once per session.
+    """
 
-    def __init__(self, model_name="small"):
+    global _model, _model_name
 
-        print("Loading Whisper Model...")
+    if model_name is None:
+        model_name = _model_name
 
-        self.model = whisper.load_model(model_name)
+    if _model is None or model_name != _model_name:
+        _model_name = model_name
+        _model = whisper.load_model(model_name)
 
-        print("Whisper Model Loaded.")
-
-    def get_model(self):
-
-        return self.model
-    
-stt = SpeechToText()
-
-processor = AudioProcessor()
-
-metrics = SpeechMetrics()
-
-audio = "uploads/recordings/test.wav"
-
-result = stt.transcribe(audio)
-
-duration = processor.get_duration(audio)
-
-report = metrics.analyze(
-
-    result["transcript"],
-
-    duration
-
-)
-
-print(report)    
-
+    return _model

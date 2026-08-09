@@ -1,8 +1,17 @@
+import os
+
 import streamlit as st
 
 from Interview.interviewer import InterviewController
+from Database.database import SessionLocal
+from Database.crud import create_interview
+from Database.crud import create_answer
 
-QUESTION_FILE = "Data/questions.json"
+# Absolute path so the question bank is found no matter what
+# directory Streamlit is launched/run from (IDEs and different
+# shells default to different working directories).
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+QUESTION_FILE = os.path.join(_PROJECT_ROOT, "Data", "questions.json")
 
 
 def initialize_session():
@@ -64,6 +73,8 @@ def reset_interview_state():
         "evaluation",
         "transcript",
         "interview_report",
+        "saved_interview_id",
+        "saved_for_report",
     ):
         if key in st.session_state:
             del st.session_state[key]
@@ -95,6 +106,55 @@ def show_start_screen(subject, difficulty, total_questions):
         st.rerun()
 
 
+def _save_interview_to_db(report):
+    """Persist a finished interview and its per-question answers so
+    Home, Analytics, History, and Report can show real data."""
+
+    history = report.get("History", [])
+
+    if not history:
+        return None
+
+    technical_avg = round(
+        sum(h["Evaluation"].get("technical", 0) for h in history) / len(history), 2
+    )
+    communication_avg = round(
+        sum(h["Evaluation"].get("grammar", 0) for h in history) / len(history), 2
+    )
+
+    try:
+        db = SessionLocal()
+
+        interview = create_interview(
+            db,
+            user_id=st.session_state.user_id,
+            domain=report["Subject"],
+            difficulty=report["Difficulty"],
+            interview_type="Text",
+            total_score=report["Overall Score"],
+            technical_score=technical_avg,
+            communication_score=communication_avg,
+            confidence_score=None,
+        )
+
+        for index, item in enumerate(history):
+            create_answer(
+                db,
+                interview_id=interview.id,
+                question_id=index + 1,
+                user_answer=item["User Answer"],
+                obtained_marks=item["Evaluation"].get("overall", 0),
+                feedback=item["Evaluation"].get("feedback", ""),
+            )
+
+        db.close()
+        return interview.id
+
+    except Exception as exc:
+        st.warning(f"Interview scored, but could not be saved to history: {exc}")
+        return None
+
+
 def show_finished_screen(controller):
 
     st.balloons()
@@ -102,6 +162,12 @@ def show_finished_screen(controller):
 
     report = controller.finish()
     st.session_state.interview_report = report
+
+    if "saved_interview_id" not in st.session_state or st.session_state.get(
+        "saved_for_report"
+    ) is not id(report):
+        st.session_state.saved_interview_id = _save_interview_to_db(report)
+        st.session_state.saved_for_report = id(report)
 
     st.subheader("📊 Interview Summary")
 

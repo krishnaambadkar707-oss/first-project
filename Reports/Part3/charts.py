@@ -322,66 +322,66 @@ class ChartGenerator:
 
         )
 
-def performance_trend(
+    def performance_trend(
 
-    self,
+        self,
 
-    scores
+        scores
 
-):
+    ):
 
-    interviews = [
+        interviews = [
 
-        f"I{i+1}"
+            f"I{i+1}"
 
-        for i in range(
+            for i in range(
 
-            len(scores)
+                len(scores)
+
+            )
+
+        ]
+
+        plt.figure(
+
+            figsize=(8,5)
 
         )
 
-    ]
+        plt.plot(
 
-    plt.figure(
+            interviews,
 
-        figsize=(8,5)
+            scores,
 
-    )
+            marker="o",
 
-    plt.plot(
+            linewidth=3
 
-        interviews,
+        )
 
-        scores,
+        plt.ylim(
 
-        marker="o",
+            0,
 
-        linewidth=3
+            100
 
-    )
+        )
 
-    plt.ylim(
+        plt.title(
 
-        0,
+            "Interview Performance"
 
-        100
+        )
 
-    )
+        plt.ylabel(
 
-    plt.title(
+            "Overall Score"
 
-        "Interview Performance"
+        )
 
-    )
+        return self.save(
 
-    plt.ylabel(
+            "performance.png"
 
-        "Overall Score"
-
-    )
-
-    return self.save(
-
-        "performance.png"
-
-    )        
+        )
