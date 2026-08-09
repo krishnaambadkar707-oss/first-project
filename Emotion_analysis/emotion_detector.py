@@ -26,9 +26,9 @@ class EmotionDetector:
             if isinstance(result, list):
                 result = result[0]
 
-            emotion = (result, ["dominant_emotion"])
+            emotion = result["dominant_emotion"]
 
-            confidence = (result, ["emotion"], [emotion])
+            confidence = result["emotion"][emotion]
 
             return emotion, confidence
 

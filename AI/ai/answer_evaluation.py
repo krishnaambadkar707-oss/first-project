@@ -1,10 +1,8 @@
-from ai.semantic_similarity import semantic_score
-from ai.keyword_match import keyword_score
-from ai.grammar_checker import grammar_score
-from ai.score_calculator import final_score
-from ai.feedback_generator import generate_feedback
-from Speech.speech_to_text import SpeechToText
-from AI.ai.answer_evaluation import AnswerEvaluator
+from AI.ai.semantic_similarity import semantic_score
+from AI.ai.keyword_match import keyword_score
+from AI.ai.grammar_checker import grammar_score
+from AI.ai.score_calculator import final_score
+from AI.ai.feedback_generator import generate_feedback
 
 
 class AnswerEvaluator:
@@ -45,31 +43,14 @@ class AnswerEvaluator:
 
         return {
 
-            "Semantic": round(semantic,2),
+            "Semantic": round(semantic, 2),
 
-            "Keyword": round(keyword,2),
+            "Keyword": round(keyword, 2),
 
-            "Grammar": round(grammar,2),
+            "Grammar": round(grammar, 2),
 
             "Overall": overall,
 
             "Feedback": feedback
 
         }
-    
-stt = SpeechToText()
-evaluator = AnswerEvaluator()
-
-speech = stt.transcribe("uploads/recordings/test.wav")
-
-user_answer = speech["transcript"]
-
-result = evaluator.evaluate(
-
-    user_answer,
-
-    question["answer"]
-
-)
-
-print(result)

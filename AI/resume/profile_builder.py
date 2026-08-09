@@ -1,9 +1,9 @@
-from resume.entities import *
+from AI.resume.entities import *
 from resume.skill_extractor import *
 from resume.education_extractor import *
 from resume.project_extractor import *
 from resume.certification_extractor import *
-from resume.experience_extraction import *
+from AI.resume.experience_extraction import *
 
 
 def build_profile(text):

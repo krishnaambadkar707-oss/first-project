@@ -19,3 +19,9 @@ WHISPER_MODEL = "base"
 INTERVIEW_TIME = 30
 
 DEBUG = True
+
+# ---------------------------------------
+# Ensure required folders exist on startup
+# ---------------------------------------
+for _folder in (UPLOAD_FOLDER, RESUME_FOLDER, REPORT_FOLDER, RECORDING_FOLDER, CHART_FOLDER):
+    os.makedirs(_folder, exist_ok=True)

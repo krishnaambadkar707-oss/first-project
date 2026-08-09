@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from Speech.w1 import get_whisper_model
+from Speech.whisper_loader import get_whisper_model
 
 
 class SpeechToText:

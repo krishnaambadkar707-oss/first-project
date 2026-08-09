@@ -1,5 +1,3 @@
-import streamlit as st
-from Interview.interviewer import InterviewController
 from resume.resume_analyzer import analyze_resume
 
 profile = analyze_resume(text)

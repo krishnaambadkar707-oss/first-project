@@ -1,5 +1,18 @@
 import sys
 import os
+
+# Make sure the project root (the folder that contains Database/,
+# Authentication/, Dashboard/, Interview/, Speech/, Emotion_analysis/,
+# resume/, AI/ ...) is importable no matter which directory this app
+# is launched from -- e.g. `streamlit run Main_UI/app.py` from the
+# project root, or opening this file directly in an IDE.
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from dotenv import load_dotenv
+load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
+
 import streamlit as st
 from Database.database import create_tables
 
@@ -20,10 +33,12 @@ from Authentication.session import (
 
 from Dashboard.home import show_home
 from Dashboard.profile import show_profile
+from Dashboard.resume import show_resume
 from Dashboard.interview import show_interview
 from Dashboard.analytics import show_analytics
 from Dashboard.report import show_report
 from Dashboard.history import show_history
+from Dashboard.settings import show_settings
 
 
 # ---------------------------------------
@@ -110,13 +125,17 @@ page = st.sidebar.radio(
 
         "👤 Profile",
 
+        "📄 Resume",
+
         "🎤 Interview",
 
         "📊 Analytics",
 
         "📄 Report",
 
-        "🕒 History"
+        "🕒 History",
+
+        "⚙️ Settings"
 
     ]
 
@@ -146,6 +165,10 @@ elif page == "👤 Profile":
 
     show_profile()
 
+elif page == "📄 Resume":
+
+    show_resume()
+
 elif page == "🎤 Interview":
 
     show_interview()
@@ -161,3 +184,7 @@ elif page == "📄 Report":
 elif page == "🕒 History":
 
     show_history()
+
+elif page == "⚙️ Settings":
+
+    show_settings()

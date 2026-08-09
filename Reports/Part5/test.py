@@ -1,4 +1,4 @@
-from Reports.pdf_report import PDFReport
+from Reports.Part5.pdf_report import PDFReport
 
 generator = PDFReport()
 
